@@ -41,8 +41,7 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
  public String postWrite(BoardVO vo) throws Exception {
   logger.info("post write");
   
-  service.writer(vo);
-  
+  service.writer(vo);//주석추가
   return "redirect:/";
  }
  
