@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuzuro.mappers.boardMapper">
+   <insert id="writer">
+   insert into MYBOARD (BNO,TITLE,content,WRITER) 
+	values(myBoard_seq.nextval,#{title},#{content},#{writer})
+   </insert>
+	
+	<select id="read" resultType="com.kuzuro.domain.BoardVO">
+	select 
+		BNO
+		,TITLE
+		,CONTENT
+		,WRITER
+		,REQDATE
+		,VIEWCNT
+	from MYBOARD
+	WHERE BNO =#{bno}
+	</select>
+
+	<update id="update">
+	update MYBOARD
+	set title = #{title}
+		,content = #{content}
+	where BNO =#{bno}
+	</update>
+
+	<delete id="delete">
+	delete from MYBOARD
+	where BNO =#{bno}
+	
+	</delete>
+								  
+	<select id="list" resultType="com.kuzuro.domain.BoardVO">
+	SELECT 
+		BNO
+		,TITLE
+		,CONTENT
+		,WRITER
+		,REQDATE
+		,VIEWCNT
+	FROM MYBOARD
+	ORDER BY REQDATE ASC 
+	</select>
+
+
+	<select id="listPage" resultType="com.kuzuro.domain.BoardVO" parameterType="com.kuzuro.domain.Criteria">
+		select BNO, TITLE, content, WRITER, REQDATE, VIEWCNT
+		FROM (
+			SELECT BNO, 
+		    TITLE,
+		    content,
+		    WRITER,
+		    REQDATE,
+		    VIEWCNT,
+		    row_number() over(order by bno desc) as rNum from myBoard
+			) mb
+		where rNum between #{rowStart} and #{rowEnd}
+		order by bno desc
+	</select>
+	
+	<select id="listCount" resultType="int">
+	<![CDATA[
+		SELECT COUNT(BNO)
+			FROM myBoard 
+		WHERE bno > 0
+	]]>	
+	</select>
+	
+	<select id="listSearch" resultType="com.kuzuro.domain.BoardVO" parameterType="com.kuzuro.domain.SearchCriteria">
+		select BNO, TITLE, content, WRITER, REQDATE, VIEWCNT
+		from (
+
+	        	select bno, title, content, writer, reqDate, viewCnt,
+	               row_number() over(order by bno desc) as rNum
+				from MYBOARD
+     
+		)mb
+		where rNum between #{rowStart} and #{rowEnd}
+		<include refid="search"></include>
+		
+        order by bno desc
+	</select>
+	
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">and title like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'c'.toString()">and content like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'w'.toString()">and writer like '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'tc'.toString()">and (title like '%' || #{keyword} || '%') or (content like '%' || #{keyword} || '%')</if>
+		</if>
+	
+	
+	</sql>
+	
+	
+	
+	<select id="countSearch" resultType="int">
+		select count(bno)
+			from myBoard
+		where bno > 0
+		<include refid="search"></include>
+	
+	</select>
+
+	
+
+</mapper>
