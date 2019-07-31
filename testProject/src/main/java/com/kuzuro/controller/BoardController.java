@@ -18,8 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.kuzuro.domain.BoardVO;
 import com.kuzuro.domain.Criteria;
 import com.kuzuro.domain.PageMaker;
+import com.kuzuro.domain.ReplyVO;
 import com.kuzuro.domain.SearchCriteria;
 import com.kuzuro.service.BoardService;
+import com.kuzuro.service.ReplyService;
 
 @Controller
 @RequestMapping("/board/*")
@@ -29,6 +31,10 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
  
  @Inject
  BoardService service;
+ 
+ @Inject
+ ReplyService RepService;
+ 
  
  // �� �ۼ� get
  @RequestMapping(value = "/write", method = RequestMethod.GET)
@@ -58,6 +64,9 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
 	 BoardVO vo = service.read(bno);
 	 model.addAttribute("read",vo);
 	 model.addAttribute("scri",scri);
+	 List<ReplyVO> repList = RepService.readReply(bno);
+	 model.addAttribute("repList",repList);
+	 
  }
  
  @RequestMapping(value="/modify",method = RequestMethod.GET)
@@ -132,6 +141,21 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
 	 pageMaker.setCri(scri);
 	 pageMaker.setTotalCount(service.countSearch(scri)); 
 	 model.addAttribute("pageMaker",pageMaker);	 
+ }
+ 
+ @RequestMapping(value="/replyWrite",method = RequestMethod.POST)
+ public String replyWrite(ReplyVO vo, SearchCriteria scri ,RedirectAttributes rttr)throws Exception{
+	 logger.info("reply Writer");
+	 
+	 RepService.writeReply(vo);
+	 
+	 rttr.addAttribute("bno", vo.getBno());
+	 rttr.addAttribute("page",scri.getPage());
+	 rttr.addAttribute("perPageNum",scri.getPerPageNum());
+	 rttr.addAttribute("searchType",scri.getSearchType());
+	 rttr.addAttribute("keyword",scri.getKeyword());
+	 
+	 return "redirect:/board/read";
  }
  
  
