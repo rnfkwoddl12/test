@@ -158,7 +158,68 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
 	 return "redirect:/board/read";
  }
  
+ @RequestMapping(value="/replyUpdate",method = RequestMethod.POST)
+ public String updateReply(ReplyVO vo,SearchCriteria scri,RedirectAttributes rttr)throws Exception{
+	 logger.info("reply update");
+	 
+	 RepService.updateReply(vo);
+	 
+	 rttr.addAttribute("bno", vo.getBno());
+	 rttr.addAttribute("page", scri.getPage());
+	 rttr.addAttribute("perPageNum", scri.getPerPageNum());
+	 rttr.addAttribute("searchType", scri.getSearchType());
+	 rttr.addAttribute("keyword", scri.getKeyword());
+	 
+	 
+	 return "redirect:/board/read";
+ }
+ 
+ 
+
+ @RequestMapping(value="/replyDelete",method = RequestMethod.POST)
+ public String deleteReply(ReplyVO vo,SearchCriteria scri,RedirectAttributes rttr)throws Exception{
+	 logger.info("reply update");
+	 
+	 RepService.deleteReply(vo);
+	 
+	 rttr.addAttribute("bno", vo.getBno());
+	 rttr.addAttribute("page", scri.getPage());
+	 rttr.addAttribute("perPageNum", scri.getPerPageNum());
+	 rttr.addAttribute("searchType", scri.getSearchType());
+	 rttr.addAttribute("keyword", scri.getKeyword());
+	 
+	 
+	 return "redirect:/board/read";
+ }
+ 
+ @RequestMapping(value="/replyUpdate", method = RequestMethod.GET)
+ public void getReplyUpdate(@RequestParam("rno") int rno, @ModelAttribute("scri") SearchCriteria scri, Model model)throws Exception {
+	 logger.info("reply update");
+	 
+	 ReplyVO vo = null;
+	 
+	 vo = RepService.readReplySelect(rno);
+	 
+	 model.addAttribute("readReply",vo);
+	 model.addAttribute("scri",scri);
+	 
+	 
+ }
+ @RequestMapping(value="/replyDelete", method = RequestMethod.GET)
+ public void getReplyDelete(@RequestParam("rno") int rno, @ModelAttribute("scri") SearchCriteria scri, Model model)throws Exception {
+	 logger.info("reply delete");
+	 
+	 ReplyVO vo = null;
+	 
+	 vo = RepService.readReplySelect(rno);
+	 
+	 model.addAttribute("readReply",vo);
+	 model.addAttribute("scri",scri);
+	 
+	 
+ } 
  
  
   
 }
+

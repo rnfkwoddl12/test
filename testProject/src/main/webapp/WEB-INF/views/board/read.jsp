@@ -92,14 +92,39 @@
 			   작성 날짜 :  <fmt:formatDate value="${repList.regdate}" pattern="yyyy-MM-dd" />
 			  </p>
 			  
-			  <p>${repList.content}</p>
+			<p>${repList.content}</p>
+			<p>
+				<button type="button" class="replyUpdate" data-rno="${repList.rno}">수정</button> 
+			 	<button type="button" class="replyDelete" data-rno="${repList.rno}">삭제</button>
+				<script>
+					$(".replyUpdate").click(function(){
+						self.location ="/board/replyUpdate?bno=${read.bno}"
+								+"&page=${scri.page}"
+								+"&perPageNum=${scri.perPageNum}"
+								+"&searchType=${scri.searchType}"
+								+"&keyword=${scri.keyword}"
+								+"&rno="+$(this).attr("data-rno");
+					});
+				
+					
+					$(".replyDelete").click(function(){
+						self.location ="/board/replyDelete?bno=${read.bno}"
+								+"&page=${scri.page}"
+								+"&perPageNum=${scri.perPageNum}"
+								+"&searchType=${scri.searchType}"
+								+"&keyword=${scri.keyword}"
+								+"&rno="+$(this).attr("data-rno");
+					});
+				</script>
+			
+			 </p>
 			 </li>
 			 </c:forEach>   
 			 </ol>
 			</div>
 				
 				
-			<section class="replyForm">
+		<section class="replyForm">
 		<form role="form" method="post" autocomplete="off" class="form-horizontal">
 		
 			<input type="hidden" id="bno" name="bno" value="${read.bno}" readonly="readonly" />
