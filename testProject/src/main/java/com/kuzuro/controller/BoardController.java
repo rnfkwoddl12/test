@@ -3,6 +3,7 @@ package com.kuzuro.controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,15 @@ private static final Logger logger = LoggerFactory.getLogger(BoardController.cla
  
  // �� �ۼ� get
  @RequestMapping(value = "/write", method = RequestMethod.GET)
- public void getWrite() throws Exception {
+ public void getWrite(HttpSession session, Model model ) throws Exception {
   logger.info("get write");
+  
+  Object loginInfo = session.getAttribute("member");
+  
+  if(loginInfo == null) {
+	  model.addAttribute("msg",false);
+  }
+  
  }
 
  // �� �ۼ� post
